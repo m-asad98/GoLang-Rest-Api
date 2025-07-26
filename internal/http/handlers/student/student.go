@@ -8,12 +8,15 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/m-asad98/golang-restapi/internal/types"
 	"github.com/m-asad98/golang-restapi/internal/utils/response"
 )
 
 func New() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
+		slog.Info("Creating a student")
 
 		var student types.Student
 
@@ -24,7 +27,17 @@ func New() http.HandlerFunc {
 			return
 		}
 
-		slog.Info("Creating a student")
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+		// Request validation
+		if err := validator.New().Struct(student); err != nil {
+			validateErrs := err.(validator.ValidationErrors)
+			response.WriteJson(w, http.StatusBadRequest, response.ValidationError(validateErrs))
+			return
+		}
 
 		response.WriteJson(w, http.StatusCreated, map[string]string{"status": "OK"})
 	}

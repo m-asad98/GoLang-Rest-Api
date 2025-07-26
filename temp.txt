@@ -1,0 +1,12 @@
+go run cmd/golang-restapi/main.go -config config/local.yaml
+
+
+cd C:\Users\Asad\Documents\GoLang Rest Api
+
+
+
+{
+    "name": "Asad",
+    "email": "asad123@email.com",
+    "age": 25
+}
