@@ -33,6 +33,8 @@ func main() {
 
 	router.HandleFunc("POST /api/students", student.New(storage))
 	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
+	router.HandleFunc("GET /api/students", student.GetList(storage))
+
 	// setup server
 
 	server := http.Server{
@@ -61,9 +63,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err = server.Shutdown(ctx)
-	if err != nil {
-		slog.Error("Failed to shut down server", slog.String("error", err.Error()))
+	if err := server.Shutdown(ctx); err != nil {
+		slog.Error("failed to shutdown server", slog.String("error", err.Error()))
 	}
 
 	slog.Info("Server shutdown successfully")
